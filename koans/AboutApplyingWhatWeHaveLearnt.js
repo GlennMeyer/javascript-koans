@@ -32,16 +32,30 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(productsICanEat.length).toBe(FILL_ME_IN);
+    expect(productsICanEat.length).toBe(1);
   });
 
   it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
 
       var productsICanEat = [];
 
+      function noMushrooms(ingredient){
+        return ingredient !== 'mushrooms';
+      }
+
+      function noNuts(ingredient){
+        return ingredient.indexOf('nut') === -1;
+      }
+
+      productsICanEat = products.filter(function(pizza){
+        return _(pizza.ingredients).all(noMushrooms);
+      }).filter(function(pizza){
+        return _(pizza.ingredients).all(noNuts);
+      });
+
       /* solve using filter() & all() / any() */
 
-      expect(productsICanEat.length).toBe(FILL_ME_IN);
+      expect(productsICanEat.length).toBe(2);
   });
 
   /*********************************************************************************/
@@ -55,14 +69,22 @@ describe("About Applying What We Have Learnt", function() {
       }
     }
     
-    expect(sum).toBe(FILL_ME_IN);
+    expect(sum).toBe(233168);
   });
 
   it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (functional)", function () {
 
-    var sum = FILL_ME_IN;    /* try chaining range() and reduce() */
+    var sum = _.range(1, 1000);    /* try chaining range() and reduce() */
 
-    expect(233168).toBe(FILL_ME_IN);
+    function moduloThreeOrFive(number){
+      return number % 3 === 0 || number % 5 === 0;
+    }
+
+    sum = sum.filter(moduloThreeOrFive).reduce(function(sum, number){
+      return sum += number;
+    });
+
+    expect(233168).toBe(sum);
   });
 
   /*********************************************************************************/
@@ -75,7 +97,7 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
@@ -83,7 +105,15 @@ describe("About Applying What We Have Learnt", function() {
 
     /* chain() together map(), flatten() and reduce() */
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    function ingredients(pizza){
+      return pizza.ingredients;
+    }
+
+    test = _(products).chain().map(ingredients).flatten().reduce(function(sum, ingredient){
+      ingredientCount[ingredient] ? ingredientCount[ingredient] += 1 : ingredientCount[ingredient] = 1;
+    });
+
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   /*********************************************************************************/
@@ -91,17 +121,42 @@ describe("About Applying What We Have Learnt", function() {
   /*
   it("should find the largest prime factor of a composite number", function () {
   
-  });
+  });*/
 
   it("should find the largest palindrome made from the product of two 3 digit numbers", function () {
-    
-  });
+    var numbers = _.range(100, 1000)
 
+    var products = []
+
+    numbers.forEach(function(x){
+      numbers.forEach(function(y){
+        products.push(x * y)
+      })
+    })
+
+    products = products.filter(function(number){
+      var reverse = String(number).split('').reverse().join('')
+
+      return reverse === String(number)
+    })
+
+    largest = products.pop()
+    
+    expect(largest).toBe(580085);
+  });
+  
   it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
-      
+    var numbers = _.range(230000000, 240000000)
     
-  });
+    function divisibleBy(number){
+      return number % 20 === 0 && number % 19 === 0 && number % 18 === 0 && number % 17 === 0 && number % 16 === 0 && number % 15 === 0 && number % 14 === 0 && number % 13 === 0 && number % 12 === 0 && number % 11 === 0 && number % 10 === 0 && number % 9 === 0 && number % 8 === 0 && number % 7 === 0 && number % 6 === 0 && number % 5 === 0 && number % 4 === 0 && number % 3 === 0 && number % 2 === 0
+    }
 
+    numbers = numbers.filter(divisibleBy)
+
+    expect(numbers[0]).toBe(232792560)
+  });
+  /*
   it("should find the difference between the sum of the squares and the square of the sums", function () {
     
   });
